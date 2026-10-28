@@ -1,0 +1,23 @@
+{
+  "name": "agent-os",
+  "version": "1.0.0",
+  "description": "Agent OS — Personal AI Operating System",
+  "type": "module",
+  "scripts": {
+    "start": "pm2 start ecosystem.config.cjs",
+    "stop": "pm2 stop all",
+    "restart": "pm2 restart all",
+    "logs": "pm2 logs",
+    "status": "pm2 list",
+    "install-deps": "npm install"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.27.0",
+    "chokidar": "^3.6.0",
+    "cors": "^2.8.6",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "node-notifier": "^10.0.1",
+    "node-schedule": "^2.1.1"
+  }
+}

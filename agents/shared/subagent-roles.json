@@ -1,0 +1,248 @@
+{
+  "$comment": "Sub-agent role registry. Read by the Antigravity leads (Claude, Gemini) now, and by the Mika OS orchestrator once Phase D dispatch is wired up. Human version: obsidian/Agents/Sub-Agent Roles.md. A task file's `role:` field names one of these roles. Updated 2026-10-24 (v2: new-role rule); 2026-10-27 (v3: explorer, scribe, privacy-guard, applications, git-keeper; Claude agent files in .claude/agents/).",
+  "version": 3,
+  "run_mode": "antigravity",
+  "run_mode_note": "Mika 2026-10-24: run sub-agents in Antigravity (Claude + Gemini). Do not start the local/offline PM2 agents for now.",
+  "parallel": {
+    "max_working_tasks": 3,
+    "same_role_instances": "One instance per independent target. When a request covers several apps or websites (or several variants of one), split it into one task per target and launch one sub-agent of the same role per task, in parallel, up to max_working_tasks.",
+    "no_overlap_rule": "Two instances may run together only if their `touches` (or working-copy folders) do not overlap. If they overlap, the later task depends_on the earlier one.",
+    "isolation": "New files/folders: write directly. Existing files: work on a copy in <workspace>/_worktrees/T-xxxx/ and copy back after Mika approves (most portfolio files are not tracked in git).",
+    "max_working_tasks_note": "Raise only when Mika agrees (every result needs his review)."
+  },
+  "common_reading": [
+    "<workspace>/AGENTS.md",
+    "<workspace>/AGENT_OPERATING_RULES.md",
+    "the task file in obsidian/Tasks/Queue/",
+    "the project hub in obsidian/Projects/"
+  ],
+  "common_limits": [
+    "Change only files in the task's touches (or its working copy)",
+    "Never publish, push, commit, send, delete, or contact anyone",
+    "Facts only from Mika's notes and files; never invent numbers, clients or dates",
+    "No phone numbers, emails or references' contacts on the portfolio",
+    "Finish with Tasks/Results/T-xxxx.md, set status: review, stop"
+  ],
+  "roles": {
+    "web-builder": {
+      "does": "Builds or edits websites and pages: concept sites, portfolio pages, switchers, content updates.",
+      "champ_os_owner": "builder",
+      "model_hint": "claude",
+      "extra_reading": [
+        "obsidian/MOCs/Design Library.md",
+        "<workspace>/DESIGN_REFERENCE_LUXURY_WEB_AND_APPS.md#8",
+        "obsidian/Resources/Styles/"
+      ],
+      "test": "Headless Chrome at 1440x900 and 390x844: no console errors, scrollWidth - innerWidth == 0, look at every screenshot, reduced motion works.",
+      "parallel_ok": true,
+      "example_tasks": [
+        "T-0002",
+        "T-0005",
+        "T-0008",
+        "T-0009",
+        "T-0025",
+        "T-0030",
+        "T-0031",
+        "T-0032"
+      ],
+      "status": "active"
+    },
+    "motion-3d-builder": {
+      "does": "Three.js scenes, hero animations, logo intros, scroll-driven motion.",
+      "champ_os_owner": "builder",
+      "model_hint": "claude",
+      "extra_reading": [
+        "obsidian/Notes/Three.js Playbook.md",
+        "obsidian/Resources/Design-Library/Patterns/",
+        "obsidian/Resources/Styles/<style-note>.md"
+      ],
+      "test": "web-builder tests plus timed frames (freeze hooks like ?heroT= / ?introT=), real-GPU fps (--use-angle=d3d11), pause off-screen, reduced-motion still frame, no-WebGL fallback.",
+      "parallel_ok": true,
+      "example_tasks": [
+        "T-0006",
+        "T-0018",
+        "T-0029",
+        "T-0033",
+        "T-0034"
+      ],
+      "status": "active"
+    },
+    "app-builder": {
+      "does": "Desktop/mobile apps: Mika OS Electron app, other Electron or React Native apps.",
+      "champ_os_owner": "builder",
+      "model_hint": "claude",
+      "extra_reading": [
+        "<workspace>/app/DESIGN_SYSTEM.md",
+        "obsidian/Notes/App Engineering Playbook.md",
+        "obsidian/MOCs/System - Mika OS.md"
+      ],
+      "test": "Build/run the app, drive it (e.g. puppeteer over the Electron debug port), screenshot, no console errors; never expose API keys in the frontend.",
+      "parallel_ok": true,
+      "example_tasks": [],
+      "status": "active"
+    },
+    "engine-developer": {
+      "does": "Backend/engine code with tests, e.g. a Python engine, agent shared libraries.",
+      "champ_os_owner": "builder",
+      "model_hint": "claude",
+      "extra_reading": [
+        "the project's docs/ (DECISIONS, ARCHITECTURE)"
+      ],
+      "test": "Run the project's test suite and harness; report exact commands and results.",
+      "parallel_ok": true,
+      "example_tasks": [
+        "T-0022"
+      ],
+      "status": "active"
+    },
+    "case-study-writer": {
+      "does": "Portfolio write-ups and case studies from real code and notes; every claim cites a file.",
+      "champ_os_owner": "career-expert",
+      "model_hint": "gemini",
+      "extra_reading": [
+        "<workspace>/PORTFOLIO_CASE_STUDY_PROMPT.md",
+        "obsidian/Graphs/"
+      ],
+      "test": "Every claim has a file citation; privacy grep (emails, phones) is clean.",
+      "parallel_ok": true,
+      "example_tasks": [
+        "T-0013",
+        "T-0014",
+        "T-0016"
+      ],
+      "status": "active"
+    },
+    "design-librarian": {
+      "does": "Documents designs in the Design Library: site notes, tokens, patterns, style notes, screenshots.",
+      "champ_os_owner": "vault-manager",
+      "model_hint": "gemini",
+      "extra_reading": [
+        "obsidian/Resources/Design-Library/README.md",
+        "obsidian/MOCs/Design Library.md"
+      ],
+      "test": "All template headings filled; values measured not guessed (est. marked); wiki-link check passes; studied designs marked study, own work marked own-work.",
+      "parallel_ok": true,
+      "example_tasks": [
+        "T-0017",
+        "T-0028"
+      ],
+      "status": "active"
+    },
+    "researcher": {
+      "does": "Web or document research that feeds a task (sources, competitors, references). Read-only.",
+      "champ_os_owner": "researcher",
+      "model_hint": "gemini",
+      "extra_reading": [],
+      "test": "Every fact has a source URL and date.",
+      "parallel_ok": true,
+      "example_tasks": [],
+      "status": "active"
+    },
+    "reviewer": {
+      "does": "Independent check of another sub-agent's result against its done_test (scope, screenshots, facts). Used by the lead; never edits the work.",
+      "champ_os_owner": "orchestrator",
+      "model_hint": "the other model than the one that built it",
+      "extra_reading": [
+        "the result note being reviewed"
+      ],
+      "test": "Re-run the key checks; report pass/fail per done_test part.",
+      "parallel_ok": true,
+      "example_tasks": [],
+      "status": "active"
+    },
+    "github-organizer": {
+      "status": "active",
+      "approved_on": "2026-10-27",
+      "approved_by": "Mika (asked for it directly)",
+      "does": "Audits and organises Mika's GitHub (account mikachamp) via the gh CLI: repo inventory, descriptions, topics, READMEs, licences, pinned repos, stale or duplicate repos, secrets and privacy risks in public repos, which local projects have no repo or backup. Produces a report plus a numbered change list.",
+      "champ_os_owner": "orchestrator",
+      "model_hint": "claude",
+      "extra_reading": [
+        "obsidian/MOCs/Projects.md",
+        "obsidian/Projects/ (hubs with github: fields)",
+        "AGENTS.md Folder map"
+      ],
+      "test": "Every finding cites the repo and file or API field; read-only gh commands only (gh repo list/view, gh api GET).",
+      "limits_extra": "READ-ONLY on GitHub. Never create, rename, archive, delete, transfer, push, change visibility, edit descriptions/topics or open issues/PRs without Mika approving that exact numbered change. Never print tokens. Treat public repos as a privacy check (no phone numbers, emails, client data, .env).",
+      "parallel_ok": false,
+      "example_tasks": [
+        "T-0039"
+      ]
+    },
+    "explorer": {
+      "does": "Fast read-only search: finds files, reads code or notes and returns a short summary with paths so the lead saves context.",
+      "champ_os_owner": "orchestrator",
+      "model_hint": "claude-haiku",
+      "extra_reading": [],
+      "test": "Answer cites paths; says clearly what was not found; wrote nothing.",
+      "parallel_ok": true,
+      "example_tasks": [],
+      "status": "active",
+      "approved_on": "2026-10-27",
+      "approved_by": "Mika ('create more agents you think are necessary and the rules for them')"
+    },
+    "scribe": {
+      "does": "Records finished work in the vault: Tasks/Results/T-xxxx.md, build-log rows, project notes, status to review, moves the lock to Tasks/locks/released/.",
+      "champ_os_owner": "vault-manager",
+      "model_hint": "claude-haiku",
+      "extra_reading": [
+        "obsidian/Projects/"
+      ],
+      "test": "Result note present with files, checks and open issues; status is review (never done); only files under obsidian/ changed.",
+      "parallel_ok": true,
+      "example_tasks": [],
+      "status": "active",
+      "approved_on": "2026-10-27",
+      "approved_by": "Mika ('create more agents you think are necessary and the rules for them')"
+    },
+    "privacy-guard": {
+      "does": "Read-only check of anything that can be seen by others (portfolio, client concepts, artifacts, case studies, screenshots) for personal data, client confidentiality, consent and missing concept banners.",
+      "champ_os_owner": "orchestrator",
+      "model_hint": "claude-haiku",
+      "extra_reading": [
+        "obsidian/Projects/"
+      ],
+      "test": "Every finding cites file and line or image with a suggested fix; images were actually looked at; changed nothing.",
+      "parallel_ok": true,
+      "example_tasks": [],
+      "status": "active",
+      "approved_on": "2026-10-27",
+      "approved_by": "Mika ('create more agents you think are necessary and the rules for them')"
+    },
+    "applications": {
+      "does": "Drafts job applications: fit score for a listing, tailored CV summary and bullets, short cover letter, tracker row. Facts only from the user's CV note; drafts only, never submits.",
+      "champ_os_owner": "career-expert",
+      "model_hint": "claude",
+      "extra_reading": [
+        "obsidian/MOCs/Career.md"
+      ],
+      "test": "Every claim traces to the CV; listing link and fit reasons recorded; drafts saved under obsidian/Career/Applications/; nothing sent or submitted.",
+      "parallel_ok": true,
+      "example_tasks": [],
+      "status": "active",
+      "approved_on": "2026-10-27",
+      "approved_by": "Mika ('create more agents you think are necessary and the rules for them')"
+    },
+    "git-keeper": {
+      "does": "Backup planner for local projects: secret and client-data scan, .gitignore check, proposed commit groups and messages, and the exact commands (incl. gh repo create --private) for Mika to run. Never runs git add/commit/push itself.",
+      "champ_os_owner": "orchestrator",
+      "model_hint": "claude-haiku",
+      "extra_reading": [],
+      "test": "Scan results listed per repo; commands are copy-paste ready; working tree unchanged (git status identical before and after).",
+      "parallel_ok": true,
+      "example_tasks": [],
+      "status": "active",
+      "approved_on": "2026-10-27",
+      "approved_by": "Mika ('create more agents you think are necessary and the rules for them')"
+    }
+  },
+  "not_for_subagents": {
+    "mika": "Tasks with assignee: mika (decisions, approvals, contacting people, submitting applications, deleting files). Never launch a sub-agent for these."
+  },
+  "new_roles": {
+    "rule": "The orchestrator/lead may add more instances of any active role freely (within max_working_tasks). It may also DRAFT a new role when work fits none of the existing roles.",
+    "how": "Add the role under roles with status: proposed and all fields (does, champ_os_owner, model_hint, extra_reading, test, parallel_ok), plus proposed_by and proposed_on. Note it in the task result and tell Mika.",
+    "proposed_role_limits": "A proposed role may be used straight away only for read-only or notes-only work (research, drafts, design notes). It must not build, edit code or files outside a notes path until Mika approves it once; then set status: active and approved_on.",
+    "cannot_change": "No role, new or old, can change the common_limits (never publish, push, commit, send, delete, or contact anyone; facts only from Mika's notes; privacy) or raise max_working_tasks. Only Mika changes those."
+  }
+}

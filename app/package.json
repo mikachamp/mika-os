@@ -1,0 +1,31 @@
+{
+  "name": "agent-os-app",
+  "version": "1.0.0",
+  "description": "Mika OS — Personal AI Operating System Dashboard",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder"
+  },
+  "dependencies": {
+    "electron-store": "^8.2.0",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3",
+    "puppeteer-core": "^25.13.0"
+  },
+  "build": {
+    "appId": "com.agentOS.dashboard",
+    "productName": "Mika OS",
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.png"
+    }
+  },
+  "allowScripts": {
+    "electron@31.7.7": true
+  }
+}
