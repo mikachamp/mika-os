@@ -6,6 +6,14 @@ I built it to stop babysitting a pile of always-on bots. It started as 15 backgr
 
 > Status, honestly: the desktop app and the original agent fleet work. The task-queue helpers (claim, heartbeat, finish, stale takeover) are written and tested but not wired into the orchestrator yet. The migration is in steps, and the unfinished ones are marked below.
 
+## What it looks like
+
+| Command Center | Agent fleet | Knowledge graph |
+|---|---|---|
+| ![Mika OS command center](docs/screenshots/mika-os-dashboard.jpg) | ![Mika OS agent fleet](docs/screenshots/mika-os-agents.jpg) | ![Mika OS knowledge graph](docs/screenshots/mika-os-knowledge-graph.jpg) |
+
+These are taken from this repo's app running against a small fictional demo vault, with a stub serving demo agent statuses. My real vault stays private. More of my work lives in my portfolio: [mikachamp.github.io/portfolio](https://mikachamp.github.io/portfolio/).
+
 ## The 30-second version
 
 - **One orchestrator** routes requests and (soon) dispatches queued tasks.
